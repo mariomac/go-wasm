@@ -5,22 +5,45 @@ import "syscall/js"
 type Canvas struct {
 	width  float64
 	height float64
+	doc    js.Value
+	elem   js.Value
 	ctx    js.Value
 }
 
-func GetCanvas(id string) *Canvas {
-	doc := js.Global().Get("document")
-	canvasElement := doc.Call("getElementById", id)
+type CanvasConfig func(c *Canvas)
 
+func GetCanvas(id string, cfgs ...CanvasConfig) *Canvas {
+	doc := js.Global().Get("document")
+	elem := doc.Call("getElementById", id)
 	canvas := Canvas{
-		// todo: allow choosing full screen or custom definition
-		width:  doc.Get("body").Get("clientWidth").Float(),
-		height: doc.Get("body").Get("clientHeight").Float(),
-		ctx:    canvasElement.Call("getContext", "2d"),
+		doc:  doc,
+		elem: elem,
+		ctx:  elem.Call("getContext", "2d"),
 	}
-	canvasElement.Set("width", canvas.width)
-	canvasElement.Set("height", canvas.height)
+
+	for _, cfg := range cfgs {
+		cfg(&canvas)
+	}
 	return &canvas
+}
+
+func FullScreen(resize bool) CanvasConfig {
+	return func(c *Canvas) {
+		c.adjustToWindow()
+		if resize {
+			js.Global().Set("onresize", js.FuncOf(func(_ js.Value, _ []js.Value) interface{} {
+				c.adjustToWindow()
+				return nil
+			}))
+		}
+	}
+}
+
+func (c *Canvas) adjustToWindow() {
+	c.width = c.doc.Get("body").Get("clientWidth").Float()
+	c.height = c.doc.Get("body").Get("clientHeight").Float()
+	c.elem.Set("width", c.width)
+	c.elem.Set("height", c.height)
 }
 
 func (c *Canvas) Clear(bgcolor string) {
