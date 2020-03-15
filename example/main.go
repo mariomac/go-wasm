@@ -13,8 +13,9 @@ func main() {
 		draw.FullScreen(true))
 
 	c.ClearRect(0, 0, c.GetWidth(), c.GetHeight())
-	c.Font("40px Arial")
 	txtPos := float64(c.GetHeight())
+	counter := float64(0)
+	img := draw.HTMLImageElement("./img/virus.png")
 	for {
 		for col := 0; col < 256; col++ {
 			c.FillStyle(fmt.Sprintf("#%x%x%x", 255-col, 64+col/2, col))
@@ -22,11 +23,21 @@ func main() {
 		}
 		c.FillStyle("yellow")
 		c.StrokeStyle("black")
+		c.Font("40px Arial")
 		for l, line := range txt {
 			c.FillText(line, 0, txtPos+float64(l)*50)
 			c.StrokeText(line, 0, txtPos+float64(l)*50)
 		}
+		c.DrawImageD(img, 20, 20, 200, 200)
+		c.DrawImage(img, 100, 100)
+		c.Save()
+		c.Translate(360, 160)
+		c.Rotate(counter/10)
+		c.Translate(-360, -160)
+		c.DrawImageD(img, 360, 160, 120, 120)
+		c.Restore()
 		txtPos -= 1
+		counter++
 		time.Sleep(20 * time.Millisecond)
 	}
 

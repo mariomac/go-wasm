@@ -35,7 +35,6 @@ const (
 // TODO: drawImage
 // TODO: createImageData, getImageData, putImageData
 // TODO: imageSmoothingEnabled, imageSmoothingQuality
-// TODO: save, restore, canvas
 // TODO: addHitRegion, removeHitRegion, clearHitRegions
 // TODO: filter
 
@@ -157,4 +156,24 @@ func (ca *Canvas) SetTransformM(m DOMMatrixReadOnly) {
 
 func (ca *Canvas) ResetTransform() {
 	ca.ctx.Call("resetTransform")
+}
+
+func (c *Canvas) Save() {
+	c.ctx.Call("save")
+}
+
+func (c *Canvas) Restore() {
+	c.ctx.Call("restore")
+}
+
+func (c *Canvas) Canvas() js.Value {
+	return c.ctx
+}
+
+func (c *Canvas) DrawImage(img CanvasImageSource, dx, dy float64) {
+	c.ctx.Call("drawImage", img.value, dx, dy)
+}
+
+func (c *Canvas) DrawImageD(img CanvasImageSource, dx, dy, dWidth, dHeight float64) {
+	c.ctx.Call("drawImage", img.value, dx, dy, dWidth, dHeight)
 }
