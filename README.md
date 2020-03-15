@@ -22,10 +22,10 @@ func main() {
 	c := draw.GetCanvas("theCanvas",
 		draw.FullScreen(true))
 
-    c.StrokeStyle("green")
+	c.StrokeStyle("green")
 	c.LineWidth(15)
 	for {
-    	c.ClearRect(0, 0, c.GetWidth(), c.GetHeight())
+    		c.ClearRect(0, 0, c.GetWidth(), c.GetHeight())
 		c.StrokeRect(-50, -50, 100, 100)
 		c.Rotate(0.02)
 		time.Sleep(20 * time.Millisecond)
