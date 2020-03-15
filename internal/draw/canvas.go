@@ -1,6 +1,8 @@
 package draw
 
-import "syscall/js"
+import (
+	"syscall/js"
+)
 
 type Canvas struct {
 	width  float64
@@ -28,6 +30,14 @@ const (
 // TODO: shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY
 // TODO: beginPath, closePath, moveTo, lineTo, bezierCurveTo, quadraticCurveTo, arc, arcTo, ellipse, rect
 // TODO: fill, stroke, drawFocusIfNeeded, scrollPathIntoView, clip, isPointInPath, isPointInStroke
+// TODO: currentTransform, getTransform
+// TODO: globalAlpha, globalCompositeOperation
+// TODO: drawImage
+// TODO: createImageData, getImageData, putImageData
+// TODO: imageSmoothingEnabled, imageSmoothingQuality
+// TODO: save, restore, canvas
+// TODO: addHitRegion, removeHitRegion, clearHitRegions
+// TODO: filter
 
 type CanvasConfig func(c *Canvas)
 
@@ -43,6 +53,7 @@ func GetCanvas(id string, cfgs ...CanvasConfig) *Canvas {
 	for _, cfg := range cfgs {
 		cfg(&canvas)
 	}
+
 	return &canvas
 }
 
@@ -112,4 +123,33 @@ func (c *Canvas) FillStyle(style string) {
 func (c *Canvas) StrokeStyle(style string) {
 	c.ctx.Set("strokeStyle", style)
 }
+
+func (c *Canvas) Rotate(angleRadians float64) {
+	c.ctx.Call("rotate", angleRadians)
+}
+
+func (c *Canvas) Scale(x, y float64) {
+	c.ctx.Call("scale", x, y)
+}
+
+func (c *Canvas) Translate(x, y float64) {
+	c.ctx.Call("translate", x, y)
+}
+
+func (ca *Canvas) Transform(a, b, c, d, e, f float64) {
+	ca.ctx.Call("transform", a, b, c, d, e, f)
+}
+
+func (ca *Canvas) SetTransform(a, b, c, d, e, f float64) {
+	ca.ctx.Call("setTransform", a, b, c, d, e, f)
+}
+
+func (ca *Canvas) SetTransformM(m DOMMatrixReadOnly) {
+	ca.ctx.Call("setTransform", js.Value(m))
+}
+
+func (ca *Canvas) ResetTransform() {
+	ca.ctx.Call("resetTransform")
+}
+
 
