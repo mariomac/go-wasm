@@ -76,6 +76,13 @@ func (c *Canvas) adjustToWindow() {
 	c.elem.Set("height", c.height)
 }
 
+func (c *Canvas) GetWidth() float64 {
+	return c.width
+}
+func (c *Canvas) GetHeight() float64 {
+	return c.height
+}
+
 func (c *Canvas) FillRect(x, y, width, height float64) {
 	c.ctx.Call("fillRect", x, y, width, height)
 }
@@ -151,5 +158,3 @@ func (ca *Canvas) SetTransformM(m DOMMatrixReadOnly) {
 func (ca *Canvas) ResetTransform() {
 	ca.ctx.Call("resetTransform")
 }
-
-
