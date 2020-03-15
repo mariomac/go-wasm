@@ -5,6 +5,8 @@ A Go library to manage HTML5 canvas through WebAssembly.
 
 **This library is in early development stage**
 
+![](demo.mp4)
+
 ## Example
 
 ```go
