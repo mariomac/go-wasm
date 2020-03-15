@@ -1,3 +1,3 @@
-module github.com/mariomac/go-wasm
+module github.com/mariomac/gorrazo
 
 go 1.14

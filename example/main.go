@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/mariomac/go-wasm/internal/draw"
+	"github.com/mariomac/gorrazo/pkg/draw"
 )
 
 func main() {
