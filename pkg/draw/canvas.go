@@ -20,14 +20,21 @@ const (
 	LineCapSquare Cap = "square"
 )
 
+type Repetition string
+
+const (
+	Repeat   = "repeat"
+	RepeatX  = "repeat-x"
+	RepeatY  = "repeat-y"
+	NoRepeat = "no-repeat"
+)
+
 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
 // TODO: measureText https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/measureText
 // TODO: lineJoin https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
 // TODO: miterLimit https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/miterLimit
 // TODO: getLineDash, setLineDash, lineDashOffset https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getLineDash
 // TODO: textAlign, textBaseline, direction
-// TODO: createLinearGradient, createRadialGradient, createPattern
-// TODO: shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY
 // TODO: beginPath, closePath, moveTo, lineTo, bezierCurveTo, quadraticCurveTo, arc, arcTo, ellipse, rect
 // TODO: fill, stroke, drawFocusIfNeeded, scrollPathIntoView, clip, isPointInPath, isPointInStroke
 // TODO: currentTransform, getTransform
@@ -126,8 +133,20 @@ func (c *Canvas) FillStyle(style string) {
 	c.ctx.Set("fillStyle", style)
 }
 
+func (c *Canvas) FillStyleGradient(g CanvasGradient) {
+	c.ctx.Set("fillStyle", g.value)
+}
+
+func (c *Canvas) FillStylePattern(p CanvasPattern) {
+	c.ctx.Set("fillStyle", p.value)
+}
+
 func (c *Canvas) StrokeStyle(style string) {
 	c.ctx.Set("strokeStyle", style)
+}
+
+func (c *Canvas) StrokeStyleGradient(g CanvasGradient) {
+	c.ctx.Set("strokeStyle", g.value)
 }
 
 func (c *Canvas) Rotate(angleRadians float64) {
@@ -151,7 +170,7 @@ func (ca *Canvas) SetTransform(a, b, c, d, e, f float64) {
 }
 
 func (ca *Canvas) SetTransformM(m DOMMatrixReadOnly) {
-	ca.ctx.Call("setTransform", js.Value(m))
+	ca.ctx.Call("setTransform", m.value)
 }
 
 func (ca *Canvas) ResetTransform() {
@@ -176,4 +195,35 @@ func (c *Canvas) DrawImage(img CanvasImageSource, dx, dy float64) {
 
 func (c *Canvas) DrawImageD(img CanvasImageSource, dx, dy, dWidth, dHeight float64) {
 	c.ctx.Call("drawImage", img.value, dx, dy, dWidth, dHeight)
+}
+
+func (c *Canvas) CreateLinearGradient(x0, y0, x1, y1 float64) CanvasGradient {
+	grad := c.ctx.Call("createLinearGradient", x0, y0, x1, y1)
+	return CanvasGradient{value: grad}
+}
+
+func (c *Canvas) CreateRadialGradient(x0, y0, r0, x1, y1, r1 float64) CanvasGradient {
+	grad := c.ctx.Call("createRadialGradient", y0, y0, r0, x1, y1, r1)
+	return CanvasGradient{value: grad}
+}
+
+func (c *Canvas) CreatePattern(img CanvasImageSource, r Repetition) CanvasPattern {
+	pat := c.ctx.Call("createPattern", img.value, string(r))
+	return CanvasPattern{value: pat}
+}
+
+func (c *Canvas) ShadowBlur(level float64) {
+	c.ctx.Set("shadowBlur", level)
+}
+
+func (c *Canvas) ShadowColor(color string) {
+	c.ctx.Set("shadowColor", color)
+}
+
+func (c *Canvas) ShadowOffsetX(offset float64) {
+	c.ctx.Set("shadowOffsetX", offset)
+}
+
+func (c *Canvas) ShadowOffsetY(offset float64) {
+	c.ctx.Set("shadowOffsetY", offset)
 }
